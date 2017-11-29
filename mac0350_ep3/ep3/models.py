@@ -13,12 +13,25 @@ class Usuario(models.Model):
 	estado = models.CharField(max_length=2, null=True, blank=True)
 	ativo = models.BooleanField()
 
+	@classmethod
+	def create(cls, data):
+		return cls(pnome=data["pnome"],
+				   snome=data["snome"],
+				   senha=data["senha"],
+				   email=data["email"],
+				   cep=data["cep"],
+				   rua=data["rua"],
+				   numero=data["numero"],
+				   cidade=data["cidade"],
+				   estado=data["estado"],
+				   ativo=data["ativo"])
+
 class UsuarioForm(ModelForm):
 	class Meta:
 		model = Usuario
 		fields = ['pnome', 'snome', 'senha', 'email', 'cep', 'rua', 
 				  'numero', 'cidade', 'estado', 'ativo']
-				  
+
 
 
 # class Telefone_Usuario(models.Model):

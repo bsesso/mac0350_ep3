@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
-from ep3.models import UsuarioForm
+from ep3.models import UsuarioForm, Usuario
 
 def index(request):
 	if not request.method == 'POST':
@@ -17,6 +17,9 @@ def create_user(request):
 	if request.method == 'POST':
 		form = UsuarioForm(request.POST)
 		if form.is_valid():
+			data = form.cleaned_data
+			new_user = Usuario.create(data)
+			new_user.save()
 			return HttpResponseRedirect('/ep3/thanks/')
 	else:
 		form = UsuarioForm
