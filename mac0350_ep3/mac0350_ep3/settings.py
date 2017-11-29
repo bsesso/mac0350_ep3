@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ep3.apps.Ep3Config',
 ]
 
 MIDDLEWARE = [
