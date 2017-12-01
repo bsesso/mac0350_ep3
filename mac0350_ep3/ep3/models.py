@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import ModelForm
 from django import forms
 
-class Usuario(models.Model):
+class Desenvolvedor(models.Model):
 	pnome = models.CharField(max_length=15)
 	snome = models.CharField(max_length=25)
 	senha = models.CharField(max_length=40)
@@ -27,22 +27,22 @@ class Usuario(models.Model):
 				   estado=data["estado"],
 				   ativo=data["ativo"])
 
-class UsuarioForm(ModelForm):
+class DesenvolvedorForm(ModelForm):
 	telefone = forms.IntegerField()
 	class Meta:
-		model = Usuario
+		model = Desenvolvedor
 		fields = ['pnome', 'snome', 'senha', 'email', 'telefone', 'cep', 'rua', 
 				  'numero', 'cidade', 'estado', 'ativo']
 
-class Telefone_Usuario(models.Model):
-	email = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+class Telefone_Desenvolvedor(models.Model):
+	email = models.ForeignKey(Desenvolvedor, on_delete=models.CASCADE)
 	telefone = models.IntegerField()
 	class Meta:
 		unique_together = (("email", "telefone"),)
 
 	@classmethod
-	def create(cls, data, usuario):
-		return cls(email=usuario,
+	def create(cls, data, desenvolvedor):
+		return cls(email=desenvolvedor,
 				   telefone=data["telefone"])
 
 # class Forum(models.Model):

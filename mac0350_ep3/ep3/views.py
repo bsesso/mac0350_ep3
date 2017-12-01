@@ -7,28 +7,28 @@ from ep3.models import *
 def index(request):
 	if not request.method == 'POST':
 		template = loader.get_template('ep3/index.html')
-		form = UsuarioForm()
+		form = DesenvolvedorForm()
 		context = {'form': form}
 		return HttpResponse(template.render(context, request))
 	return None
 
-def create_user(request):
+def create_dev(request):
 	form = None
 	if request.method == 'POST':
-		form = UsuarioForm(request.POST)
+		form = DesenvolvedorForm(request.POST)
 		if form.is_valid():
 			data = form.cleaned_data
-			new_user = Usuario.create(data)
-			new_user.save()
+			new_dev = Desenvolvedor.create(data)
+			new_dev.save()
 
-			new_telefone_user = Telefone_Usuario.create(data, new_user)
-			new_telefone_user.save()
+			new_telefone_dev = Telefone_Desenvolvedor.create(data, new_dev)
+			new_telefone_dev.save()
 
 			return HttpResponseRedirect('/ep3/thanks/')
 	else:
-		form = UsuarioForm
+		form = DesenvolvedorForm
 
-	template_path = 'ep3/create_user.html'
+	template_path = 'ep3/create_dev.html'
 	context = {'form': form}
 	return render(request, template_path, context)
 
