@@ -5,7 +5,7 @@ class Usuario(models.Model):
 	pnome = models.CharField(max_length=15)
 	snome = models.CharField(max_length=25)
 	senha = models.CharField(max_length=40)
-	email = models.CharField(max_length=40, primary_key=True)
+	email = models.EmailField(max_length=40, primary_key=True)
 	cep = models.IntegerField()
 	rua = models.CharField(max_length=50, null=True, blank=True)
 	numero = models.IntegerField(null=True, blank=True)
@@ -32,12 +32,11 @@ class UsuarioForm(ModelForm):
 		fields = ['pnome', 'snome', 'senha', 'email', 'cep', 'rua', 
 				  'numero', 'cidade', 'estado', 'ativo']
 
-
-
-# class Telefone_Usuario(models.Model):
-# 	email = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-# 	telefone = models.IntegerField(primary_key=True)
-# 	## TODO não sei como fazer as duas serem primarias
+class Telefone_Usuario(models.Model):
+	email = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+	telefone = models.IntegerField()
+	class Meta:
+		unique_together = (("email", "telefone"),)
 
 # class Forum(models.Model):
 # 	## TODO pode transformar isso naquele id que gera automatico
