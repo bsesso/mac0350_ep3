@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ModelForm
+from django import forms
 
 class Usuario(models.Model):
 	pnome = models.CharField(max_length=15)
@@ -27,9 +28,10 @@ class Usuario(models.Model):
 				   ativo=data["ativo"])
 
 class UsuarioForm(ModelForm):
+	telefone = forms.IntegerField()
 	class Meta:
 		model = Usuario
-		fields = ['pnome', 'snome', 'senha', 'email', 'cep', 'rua', 
+		fields = ['pnome', 'snome', 'senha', 'email', 'telefone', 'cep', 'rua', 
 				  'numero', 'cidade', 'estado', 'ativo']
 
 class Telefone_Usuario(models.Model):
@@ -37,6 +39,11 @@ class Telefone_Usuario(models.Model):
 	telefone = models.IntegerField()
 	class Meta:
 		unique_together = (("email", "telefone"),)
+
+	@classmethod
+	def create(cls, data, usuario):
+		return cls(email=usuario,
+				   telefone=data["telefone"])
 
 # class Forum(models.Model):
 # 	## TODO pode transformar isso naquele id que gera automatico
