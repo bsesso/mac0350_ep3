@@ -45,46 +45,63 @@ class Telefone_Desenvolvedor(models.Model):
 		return cls(email=desenvolvedor,
 				   telefone=data["telefone"])
 
-# class Forum(models.Model):
-# 	## TODO pode transformar isso naquele id que gera automatico
-# 	id = models.IntegerField(primary_key=True)
+class Projeto(models.Model):
+	id = models.IntegerField(primary_key=True)
+	titulo = models.CharField(max_length=30)
+	descricao = models.CharField(max_length=100, null=True, blank=True)
+	#relação 1:1 com 'Desenvolvedor'
+	admin = models.OneToOneField(Desenvolvedor, on_delete=models.RESTRICT)
 
-# class Projeto(models.Model):
-# 	## TODO pode transformar isso naquele id que gera automatico
-# 	id = models.IntegerField(primary_key=True)
-# 	titulo = models.CharField(max_length=30)
-# 	descricao = models.CharField(max_length=100, null=True, blank=True)
-# 	forum_id = models.ForeignKey(Forum)
-# 	adm_email = models.ForeignKey(Usuario)
+class Forum(models.Model):
+	id = models.IntegerField(primary_key=True)
+	# relação 1:1 com 'Projeto'
+	projeto = models.OneToOneField(Projeto, on_delete=models.CASCADE)
 
-# class Cronograma(models.Model):
-# 	date_time = models.DateTimeField()
-# 	projeto_id = models.ForeignKey(Projeto, primary_key=True)
-# 	## TODO não sei como fazer as duas serem primarias
+class Cronograma(models.Model):
+	date_time = models.DateTimeField()
+	# setar 'unique' pra 'True' é a mesma coisa que fazer da chave
+	# estrangeira a chave primária
+	projeto_id = models.OneToOneField(Projeto, on_delete=models.CASCADE)
 
 
-# class Topico(models.Model):
-# 	titulo = models.CharField(max_length=30, primary_key=True)
-# 	date_time = models.DateTimeField()
-# 	## TODO ainda não sei se ta certo:
-# 	status = models.IntegerField()
-# 	forum_id = models.ForeignKey(Forum)
-# 	## TODO não sei como fazer as duas serem primarias
+class Topico(models.Model):
+	titulo = models.CharField(max_length=30, primary_key=True)
+	date_time = models.DateTimeField()
+	## TODO ainda não sei se ta certo:
+	status = models.IntegerField()
+	forum_id = models.ForeignKey(Forum, on_delete=models.CASCADE)
+	
+	class Meta:
+		unique_together = (("titulo", "forum_id"),)
 
-# class Mensagem(models.Model):
-# 	## TODO pode transformar isso naquele id que gera automatico
-# 	id = models.IntegerField(primary_key=True)
-# 	texto = models.CharField(max_length=100)
-# 	date_time = models.DateTimeField()
 
-# class Requisito(models.Model):
-# 	## TODO pode transformar isso naquele id que gera automatico
-# 	id = models.IntegerField(primary_key=True)
-# 	titulo = models.CharField(max_length=30)
-# 	descricao = models.CharField(max_length=100, null=True, blank=True)
-# 	## TODO ainda não sei se ta certo:
-# 	status = models.IntegerField()
-# 	projeto_id = models.ForeignKey(Projeto)
-# 	## TODO ainda não sei se ta certo:
-# 	tipo_req = models.CharField(max_length=15)
+class Mensagem(models.Model):
+	id = models.IntegerField(primary_key=True)
+	texto = models.CharField(max_length=100)
+	date_time = models.DateTimeField()
+	topico = models.ForeignKey(Topico, on_delete=models.RESTRICT)
+	autor = models.ForeignKey(Desenvolvedor, on_delete=models.RESTRICT)
 
+class Requisito(models.Model):
+	## TODO pode transformar isso naquele id que gera automatico
+	id = models.IntegerField(primary_key=True)
+	titulo = models.CharField(max_length=30)
+	descricao = models.CharField(max_length=100, null=True, blank=True)
+	## TODO ainda não sei se ta certo:
+	status = models.IntegerField()
+	projeto_id = models.ForeignKey(Projeto, on_delete=models.RESTRICT)
+	## TODO ainda não sei se ta certo:
+	tipo_req = models.CharField(max_length=15)
+
+class RequisitoDados(models.Model):
+	## TODO pode transformar isso naquele id que gera automatico
+	id = models.IntegerField(primary_key=True)
+	nome = models.CharField(max_length=30)
+	tipo = models.CharField(max_length=15)
+	## TODO ainda não sei se ta certo:
+	requisito = models.OneToOneField(Requisito, on_delete=models.CASCADE)
+
+class RequisitosFuncional(models.Model):
+	id = models.IntegerField(primary_key=True)
+	acao = models.CharField(max_length=30, null=False)
+	requisito = models.OneToOneField(Requisito, on_delete=models.CASCADE)
