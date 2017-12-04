@@ -59,9 +59,7 @@ class Forum(models.Model):
 
 class Cronograma(models.Model):
 	date_time = models.DateTimeField()
-	# setar 'unique' pra 'True' é a mesma coisa que fazer da chave
-	# estrangeira a chave primária
-	projeto_id = models.OneToOneField(Projeto, on_delete=models.CASCADE)
+	projeto_id = models.ForeignKey(Projeto, unique=True, on_delete=models.CASCADE)
 
 
 class Topico(models.Model):
