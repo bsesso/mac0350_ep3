@@ -4,13 +4,20 @@ Configurando o postgres
 Criar usuário **mac0350_user** com senha **senha123** e permissão para criar database:
 ```
 >>> sudo su - postgres
-# psql
+>>> psql
 postgres=# CREATE USER mac0350_user WITH PASSWORD 'senha123' CREATEDB;
+(...)
+postgres=# \q
 ```
 
-Criar database mac0350_db:
+Ainda no PostGreSQL, criar database mac0350_db:
 ```
->>> createdb -U mac0350_user mac0350_db
+>>> createdb -h localhost -p 5432 -U mac0350_user mac0350_db
+```
+
+Por fim, saia do postgres usando:
+```
+>>> exit
 ```
 
 

@@ -36,7 +36,8 @@ class DesenvolvedorForm(ModelForm):
 
 class Telefone_Desenvolvedor(models.Model):
 	email = models.ForeignKey(Desenvolvedor, on_delete=models.CASCADE)
-	telefone = models.IntegerField()
+	telefone = models.IntegerField(unique=True)
+
 	class Meta:
 		unique_together = (("email", "telefone"),)
 
@@ -50,7 +51,7 @@ class Projeto(models.Model):
 	titulo = models.CharField(max_length=30)
 	descricao = models.CharField(max_length=100, null=True, blank=True)
 	#relação 1:1 com 'Desenvolvedor'
-	admin = models.OneToOneField(Desenvolvedor, on_delete=models.RESTRICT)
+	admin = models.OneToOneField(Desenvolvedor, on_delete=models.PROTECT)
 
 class Forum(models.Model):
 	id = models.IntegerField(primary_key=True)
@@ -59,7 +60,11 @@ class Forum(models.Model):
 
 class Cronograma(models.Model):
 	date_time = models.DateTimeField()
-	projeto_id = models.ForeignKey(Projeto, unique=True, on_delete=models.CASCADE)
+	descricao = models.CharField(max_length=200)
+	projeto_id = models.ForeignKey(Projeto, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = (("date_time", "projeto_id"),)
 
 
 class Topico(models.Model):
@@ -77,8 +82,8 @@ class Mensagem(models.Model):
 	id = models.IntegerField(primary_key=True)
 	texto = models.CharField(max_length=100)
 	date_time = models.DateTimeField()
-	topico = models.ForeignKey(Topico, on_delete=models.RESTRICT)
-	autor = models.ForeignKey(Desenvolvedor, on_delete=models.RESTRICT)
+	topico = models.ForeignKey(Topico, on_delete=models.CASCADE)
+	autor = models.ForeignKey(Desenvolvedor, on_delete=models.CASCADE)
 
 class Requisito(models.Model):
 	## TODO pode transformar isso naquele id que gera automatico
@@ -87,7 +92,7 @@ class Requisito(models.Model):
 	descricao = models.CharField(max_length=100, null=True, blank=True)
 	## TODO ainda não sei se ta certo:
 	status = models.IntegerField()
-	projeto_id = models.ForeignKey(Projeto, on_delete=models.RESTRICT)
+	projeto_id = models.ForeignKey(Projeto, on_delete=models.CASCADE)
 	## TODO ainda não sei se ta certo:
 	tipo_req = models.CharField(max_length=15)
 
