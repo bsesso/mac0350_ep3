@@ -34,6 +34,7 @@ class DesenvolvedorForm(ModelForm):
 		fields = ['pnome', 'snome', 'senha', 'email', 'telefone', 'cep', 'rua', 
 				  'numero', 'cidade', 'estado', 'ativo']
 
+
 class Telefone_Desenvolvedor(models.Model):
 	email = models.ForeignKey(Desenvolvedor, on_delete=models.CASCADE)
 	telefone = models.IntegerField(unique=True)
@@ -53,6 +54,23 @@ class Projeto(models.Model):
 	#relação 1:1 com 'Desenvolvedor'
 	admin = models.OneToOneField(Desenvolvedor, on_delete=models.PROTECT)
 
+
+class Tarefa(models.Model):
+	titulo = models.CharField(max_length=30, primary_key=True)
+	status = models.CharField(max_length=30)
+	projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE)
+	descricao = models.CharField(max_length=100)
+
+	class Meta:
+		unique_together = (("titulo", "projeto"),)
+
+class TarefaForm(ModelForm):
+
+	class Meta:
+		model = Tarefa
+		fields = ['projeto', 'titulo', 'status', 'descricao']
+
+
 class Forum(models.Model):
 	id = models.IntegerField(primary_key=True)
 	# relação 1:1 com 'Projeto'
@@ -71,7 +89,7 @@ class Topico(models.Model):
 	titulo = models.CharField(max_length=30, primary_key=True)
 	date_time = models.DateTimeField()
 	## TODO ainda não sei se ta certo:
-	status = models.IntegerField()
+	status = models.BooleanField()
 	forum_id = models.ForeignKey(Forum, on_delete=models.CASCADE)
 	
 	class Meta:
@@ -83,7 +101,11 @@ class Mensagem(models.Model):
 	texto = models.CharField(max_length=100)
 	date_time = models.DateTimeField()
 	topico = models.ForeignKey(Topico, on_delete=models.CASCADE)
+	forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
 	autor = models.ForeignKey(Desenvolvedor, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = (('topico', 'forum'),)
 
 class Requisito(models.Model):
 	## TODO pode transformar isso naquele id que gera automatico
@@ -93,18 +115,30 @@ class Requisito(models.Model):
 	## TODO ainda não sei se ta certo:
 	status = models.IntegerField()
 	projeto_id = models.ForeignKey(Projeto, on_delete=models.CASCADE)
-	## TODO ainda não sei se ta certo:
-	tipo_req = models.CharField(max_length=15)
 
 class RequisitoDados(models.Model):
 	## TODO pode transformar isso naquele id que gera automatico
 	id = models.IntegerField(primary_key=True)
 	nome = models.CharField(max_length=30)
 	tipo = models.CharField(max_length=15)
+	descricao = models.CharField(max_length=100)
 	## TODO ainda não sei se ta certo:
 	requisito = models.OneToOneField(Requisito, on_delete=models.CASCADE)
 
-class RequisitosFuncional(models.Model):
+	class Meta:
+		unique_together = (('id', 'requisito'),)
+
+class RequisitoFuncional(models.Model):
 	id = models.IntegerField(primary_key=True)
 	acao = models.CharField(max_length=30, null=False)
 	requisito = models.OneToOneField(Requisito, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = (('id', 'requisito'),)
+
+class RelDevProjeto(models.Model):
+	dev_email = models.ForeignKey(Desenvolvedor, on_delete=models.CASCADE)
+	projeto = models.ForeignKey(Projeto, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = (('dev_email', 'projeto'),)

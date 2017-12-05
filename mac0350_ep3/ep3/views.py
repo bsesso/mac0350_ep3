@@ -32,6 +32,33 @@ def create_dev(request):
 	context = {'form': form}
 	return render(request, template_path, context)
 
+def update_dev(request):
+	form = None
+	if request.method == 'POST':
+		form = DesenvolvedorForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+			dev = Desenvolvedor.objects.get(email=data['email'])
+
+			dev.pnome = data['pnome']
+			dev.snome = data['snome']
+			dev.cep = data['cep']
+			dev.rua = data['rua']
+			dev.numero = data['numero']
+			dev.cidade = data['cidade']
+			dev.estado = data['estado']
+			dev.ativo = data['ativo']
+	
+			dev.save()
+
+			return HttpResponseRedirect('/ep3/thanks/')
+	else:
+		form = DesenvolvedorForm
+
+	template_path = 'ep3/update_dev.html'
+	context = {'form': form}
+	return render(request, template_path, context)
+
 def thanks(request):
 	template_path = 'ep3/thanks.html'
 	context = {}
